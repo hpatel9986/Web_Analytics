@@ -1,0 +1,41 @@
+Log File 
+Step 1: 
+   rectifying table with the given column name removing unnecessary column
+   required_fields = [
+    'Object ID', 'Department', 'Object Name', 
+    'Title', 'Culture', 'Artist Nationality', 
+    'Object Begin Date', 'Object End Date', 
+    'Medium', 'Credit Line', 'Country'
+    ]
+
+Step 2:     	
+    removing unwanted white space from the leading and trailing from the record.
+     string_columns = ['Department', 'Object Name', 'Title', 'Culture', 'Artist Nationality', 'Medium', 'Credit Line', 'Country']
+     data[string_columns] = data[string_columns].apply(lambda x: x.str.strip())
+
+
+Step 3:
+     In this table date column datatype is not correct. date column has in int and float     datatype. so here change that datatype to date datatype 
+       data['Object Begin Date'] = pd.to_datetime(data['Object Begin Date'], errors='coerce')
+       data['Object End Date'] = pd.to_datetime(data['Object End Date'], errors='coerce')
+
+Step 4: 
+    Here check for the missing value and reove that record from the table 
+    # Check for missing values
+     missing_values = data.isnull().sum()
+
+    # Drop rows with missing values in required fields
+     data = data.dropna(subset=required_fields)
+
+
+Step 5: 
+     Remove Inconsistent record 
+     check  begin date is not later than the end date 
+
+     data = data[data['Object Begin Date'] <= data['Object End Date']]
+
+Step 6: 
+	Replace short name with the full name like USA with the United State 
+   data['Country'] = data['Country'].replace({ 'USA': 'United States', 'U.S.A.': 'United States', 'UK': 'United Kingdom', })
+
+   
